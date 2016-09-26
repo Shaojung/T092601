@@ -3,6 +3,8 @@ package tw.com.pcschool.t092601;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -23,11 +25,14 @@ import javax.xml.parsers.SAXParserFactory;
 
 public class MainActivity extends AppCompatActivity {
     MyDataHandler dataHandler;
+    ListView lv;
+    ArrayAdapter<String> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dataHandler = new MyDataHandler();
+        lv = (ListView) findViewById(R.id.listView);
         new Thread() {
             @Override
             public void run() {
@@ -57,6 +62,15 @@ public class MainActivity extends AppCompatActivity {
                 /* 解析XML */
                     xr.parse(new InputSource(new StringReader(xmlStr)));
 
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter = new ArrayAdapter<String>(MainActivity.this,
+                                                    android.R.layout.simple_list_item_1,
+                                                    dataHandler.data);
+                            lv.setAdapter(adapter);
+                        }
+                    });
 
                 } catch (MalformedURLException e) {
                     e.printStackTrace();

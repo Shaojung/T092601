@@ -12,8 +12,10 @@ import java.util.ArrayList;
  * Created by student on 2016/9/26.
  */
 public class MyDataHandler extends DefaultHandler{
-    boolean isTitle = false;
+    boolean isTitle = false, isItem = false, isLink = false;
+
     public ArrayList<String> data = new ArrayList();
+    public ArrayList<String> link = new ArrayList();
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -21,6 +23,14 @@ public class MyDataHandler extends DefaultHandler{
         if (qName.equals("title"))
         {
             isTitle = true;
+        }
+        if (qName.equals("link"))
+        {
+            isLink = true;
+        }
+        if (qName.equals("item"))
+        {
+            isItem = true;
         }
     }
 
@@ -31,19 +41,30 @@ public class MyDataHandler extends DefaultHandler{
         {
             isTitle = false;
         }
+        if (qName.equals("link"))
+        {
+            isLink = false;
+        }
+        if (qName.equals("item"))
+        {
+            isItem = false;
+        }
     }
 
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
         super.characters(ch, start, length);
-        if (isTitle == true)
+        if (isTitle == true && isItem == true)
         {
             String fetchStr = new String(ch).substring(start, start + length);
-            Log.d("XML", fetchStr);
             data.add(fetchStr);
         }
-
+        if (isLink == true && isItem == true)
+        {
+            String fetchStr = new String(ch).substring(start, start + length);
+            link.add(fetchStr);
+        }
     }
 
 
